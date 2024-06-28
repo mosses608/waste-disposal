@@ -124,7 +124,8 @@
 
                 @foreach ($notifications as $notification)
                 <img src="{{$notification->profile ? asset('storage/' . $notification->profile) : asset('assets/images/profile.png')}}" alt="My Image">
-                <h4>{{$notification->full_name}}</h4>
+                <h4>{{$notification->full_name}} sent notification on <span>{{$notification->created_at}}</span></h4>
+                <br>
                 @endforeach
 
                 @endif

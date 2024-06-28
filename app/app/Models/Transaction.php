@@ -9,6 +9,12 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    public static function scopeFilter($query, array $filters){
+        if($filters['search'] ?? false){
+            $query->where('created_at','like','%' . request('search') . '%');
+        }
+    }
+
     protected $fillable = [
         'amount',
         'status',

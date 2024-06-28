@@ -13,7 +13,11 @@
 
     <div class="cust-info-container-data mt-10 p-10">
 
-        @if (count($transactions) == 0)
+        @foreach ($transactions as $payment)
+
+        @endforeach
+
+        @if ($payment->phone_number != Auth::guard('customer')->user()->phone_number)
         <p>No payment history here!</p>
         @else
 

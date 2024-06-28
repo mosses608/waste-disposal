@@ -18,18 +18,20 @@
     <div class="ajax-bod-container">
         <div class="level-zxy-cont">
             <i class="fas fa-users"></i>
-            <br><br>
-            <h1><span>{{count($customers)}}</span> Customers</h1>
+            <br>
+            <h1><span>{{count($customers)}}</span> @if(count($customers)== 1) Customer @else Customers  @endif</h1><br>
+            <a href="/view-customers" class="more-viewable"><span>&#8594;</span> View More</a>
         </div>
 
         <div class="report-generate-ajax">
 
-            <a href="/generate-report"><i class="fas fa-calendar-check"></i><br>
+            <a href="/generate-report"><i class="fas fa-bar-chart"></i>
                 <br><h1>Report</h1>
-            </a>
+            </a><br>
+            <a href="/generate-report" class="more-viewable"><span>&#8594;</span> View More</a>
         </div>
     </div>
-
+<br><br><br><br><br><br><br>
     <div class="graphical-analysis-data">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

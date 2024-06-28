@@ -20,11 +20,11 @@
         <table>
             <tr>
                 <th>Full Name</th>
-                <th>Phone Number</th>
+                <th>Phone</th>
                 <th>District</th>
                 <th>Street</th>
-                <th>House Number</th>
-                <th>Registered on</th>
+                <th>House</th>
+                <th>Registry</th>
                 <th>Email</th>
                 <th>Username</th>
                 <th>Edit</th>

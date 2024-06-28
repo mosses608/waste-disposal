@@ -42,7 +42,12 @@
                 <td>{{$customer->full_name}}</td>
                 <td>{{$customer->phone_number}}</td>
                 <td>{{$customer->email}}</td>
-                <td>{{$customer->district}}, {{$customer->street}}</td>
+                <td>{{$customer->district}}, @if ($customer->street=="")
+                    {{$customer->street_n}}
+                    @else
+                    {{$customer->street}}
+                @endif
+            </td>
                 <td>{{$transaction->amount}}</td>
                 <td>{{$transaction->status}}</td>
                 <td>{{$transaction->created_at}}</td>

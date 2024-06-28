@@ -20,108 +20,9 @@ use Alphaolomi\Azampay\AzampayService as BaseAzampayService;
 use GuzzleHttp\Client;
 use App\Models\Payment;
 
-
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-
-    protected $azampay;
-
-    public function __construct(BaseAzampayService $azampay)
-    {
-        $this->azampay = $azampay;
-    }
-
-    public function mobileCheckout(Request $request)
-    {
-        $data = $this->azampay->mobileCheckout([
-            'amount' => $request->amount,
-            'currency' => 'TZS',
-            'accountNumber' => $request->accountNumber,
-            'externalId' => $request->externalId,
-            'provider' => 'Mpesa',
-        ]);
-
-        // Process response and return appropriate view or JSON response
-    }
-
-    public function getPaymentPartners()
-    {
-        $data = $this->azampay->getPaymentPartners();
-
-        // Process response and return appropriate view or JSON response
-    }
-
-    public function postCheckout(Request $request)
-    {
-        $data = $this->azampay->postCheckout([
-            'appName' => env('AZAMPAY_APP_NAME'),
-            'clientId' => env('AZAMPAY_CLIENT_ID'),
-            'vendorId' => env('AZAMPAY_CLIENT_SECRET'),
-            'language' => 'en',
-            'currency' => 'TZS',
-            'externalId' => $request->externalId,
-            'requestOrigin' => 'wastedemoapp.000webhostapp.com',
-            'redirectFailURL' => route('failure'),
-            'redirectSuccessURL' => route('success'),
-            'vendorName' => 'wastedemoapp',
-            'amount' => $request->amount,
-            'cart' => [
-                'items' => [
-                    [
-                        'name' => 'wastedemoapp',
-                    ],
-                ],
-            ],
-        ]);
-
-        // Process response and return appropriate view or JSON response
-    }
-
-    public function handleCallback(Request $request)
-    {
-        // Handle callback data received from Azampay
-        /* $payment = Payment::where('external_id', $request->externalId)->first();
-        if ($payment) {
-            $payment->status = $request->status; // Assuming callback contains payment status
-            $payment->save();
-        } */
-
-        // Additional processing based on callback data
-
-        // Return appropriate response
-    }
-
-    public function success(Request $request)
-    {
-        // Logic for successful payment
-        Payment::create([
-            'amount' => $request->amount,
-            'status' => 'success', // Assuming the payment status
-            // Add other fields as needed
-        ]);
-
-        // Return a response or render a view as needed
-        return redirect()->back();
-    }
-
-    public function failure()
-    {
-        // Logic for failed payment
-        return "Transaction declined";
-    }
-
-
-
-
-
-
-
-
-
-
-
-
     public function index(){
         return view('welcome');
     }
@@ -141,6 +42,9 @@ class Controller extends BaseController
             'messages' => Message::all(),
             'customers' => Customer::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ], compact('districts', 'customerCounts'));
     }
 
@@ -174,6 +78,9 @@ class Controller extends BaseController
         return view('my-profile',[
             'messages' => Message::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -238,7 +145,9 @@ class Controller extends BaseController
     }
 
     public function user_logout(Request $request){
-        Auth::logout();
+        Auth::guard('web')->logout();
+
+        Auth::guard('customer')->logout();
 
         $request->session()->invalidate();
 
@@ -264,6 +173,9 @@ class Controller extends BaseController
         return view('register-customer',[
             'messages' => Message::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -299,6 +211,9 @@ class Controller extends BaseController
             'customers' => Customer::latest()->paginate(15),
             'messages' => Message::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -307,6 +222,9 @@ class Controller extends BaseController
             'customer' => Customer::find($id),
             'messages' => Message::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -318,7 +236,7 @@ class Controller extends BaseController
             'street' => 'required',
             'email' => 'required',
             'username' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:7',
         ]);
 
         $customer->update($customerAccountDetails);
@@ -340,6 +258,9 @@ class Controller extends BaseController
             'customers' => Customer::latest()->paginate(15),
             'messages' => Message::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -348,6 +269,9 @@ class Controller extends BaseController
             'customer'=> Customer::find($id),
             'messages' => Message::all(),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -356,6 +280,9 @@ class Controller extends BaseController
             'messages' => Message::all(),
             'news' => News::latest()->paginate(2),
             'notifications' => Notification::latest()->paginate(5),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -379,7 +306,7 @@ class Controller extends BaseController
         return redirect()->back();
     }
 
-    /*
+
     private $gateway;
 
     public function __construct()
@@ -444,13 +371,16 @@ class Controller extends BaseController
     public function cancel(){
         return "User declined the payment!";
     }
-*/
+
     public function view_payments(){
         return view('view-payments',[
             'notifications' => Notification::latest()->paginate(5),
             'messages' => Message::all(),
             'customers' => Customer::paginate(15),
             'transactions' => Transaction::latest()->paginate(15),
+            'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
         ]);
     }
 
@@ -465,6 +395,9 @@ class Controller extends BaseController
             'customers' => Customer::all(),
             'notifications' => Notification::paginate(10),
             'messages' => Message::all(),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
         ]);
     }
 
@@ -475,6 +408,9 @@ class Controller extends BaseController
             'notifications' => Notification::paginate(10),
             'messages' => Message::all(),
             'news' => News::latest()->paginate(5),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
         ]);
     }
 
@@ -483,6 +419,9 @@ class Controller extends BaseController
             'messages' => Message::all(),
             'notifications' => Notification::paginate(10),
             'news' => News::latest()->paginate(5),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
         ]);
     }
 
@@ -492,6 +431,9 @@ class Controller extends BaseController
             'notifications' => Notification::paginate(10),
             'news' => News::latest()->paginate(5),
             'transactions' => Transaction::latest()->paginate(5),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
         ]);
     }
 
@@ -501,6 +443,9 @@ class Controller extends BaseController
             'notifications' => Notification::paginate(10),
             'news' => News::latest()->paginate(5),
             'transactions' => Transaction::latest()->get(),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
         ]);
     }
 
@@ -528,6 +473,140 @@ class Controller extends BaseController
             'notifications' => Notification::paginate(5),
             'news' => News::latest()->paginate(5),
             'transactions' => Transaction::latest()->get(),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
         ]);
     }
+
+    public function show_profile($id){
+        return view('casts.my-profile',[
+            'messages' => Message::all(),
+            'notifications' => Notification::paginate(5),
+            'news' => News::latest()->paginate(5),
+            'transactions' => Transaction::latest()->get(),
+            'customer' => Customer::find($id),
+            'customerss' => Customer::all(),
+            'transactionss' => Transaction::all(),
+            'notificationss' => Notification::all(),
+        ]);
+    }
+
+    public function update_profile_pic(Request $request, Customer $customer){
+        $profilePic=$request->validate([
+            'profile' => 'required',
+        ]);
+
+        if($request->hasFile('profile')){
+            $profilePic['profile'] = $request->file('profile')->store('customers','public');
+        }
+
+        $customer->update($profilePic);
+
+        return redirect()->back();
+    }
+
+    public function update_customer_data(Request $request, Customer $customer){
+        $cudtomerData=$request->validate([
+            'full_name' => 'required',
+            'phone_number' => 'required',
+            'district' => 'required',
+            'street' => 'nullable',
+            'street_n' => 'nullable',
+            'house_number' => 'required',
+            'email' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $customer->update($cudtomerData);
+
+        return redirect()->back()->with('customer_updated','Profile updated successfully');
+    }
+
+
+
+/*
+    protected $azampay;
+
+    public function __construct(BaseAzampayService $azampay)
+    {
+        $this->azampay = $azampay;
+    }
+
+    public function mobileCheckout(Request $request)
+    {
+        $data = $this->azampay->mobileCheckout([
+            'amount' => $request->amount,
+            'currency' => 'TZS',
+            'accountNumber' => $request->accountNumber,
+            'externalId' => $request->externalId,
+            'provider' => 'Mpesa',
+        ]);
+
+        // Process response and return appropriate view or JSON response
+    }
+
+    public function getPaymentPartners()
+    {
+        $data = $this->azampay->getPaymentPartners();
+
+        // Process response and return appropriate view or JSON response
+    }
+
+    public function postCheckout(Request $request)
+    {
+        $data = $this->azampay->postCheckout([
+            'appName' => env('AZAMPAY_APP_NAME'),
+            'clientId' => env('AZAMPAY_CLIENT_ID'),
+            'vendorId' => env('AZAMPAY_CLIENT_SECRET'),
+            'language' => 'en',
+            'currency' => 'TZS',
+            'externalId' => $request->externalId,
+            'requestOrigin' => 'wastedemoapp.000webhostapp.com',
+            'redirectFailURL' => route('failure'),
+            'redirectSuccessURL' => route('success'),
+            'vendorName' => 'wastedemoapp',
+            'amount' => $request->amount,
+            'cart' => [
+                'items' => [
+                    [
+                        'name' => 'wastedemoapp',
+                    ],
+                ],
+            ],
+        ]);
+
+        /
+    }
+
+    public function success(Request $request)
+    {
+
+        Payment::create([
+            'amount' => $request->amount,
+            'status' => 'success',
+        ]);
+
+
+        return redirect()->back();
+    }
+
+    public function failure()
+    {
+
+        return "Transaction declined";
+    }
+*/
+
+public function payment_report(){
+    return view('generate-report',[
+        'notifications' => Notification::paginate(10),
+        'messages' => Message::all(),
+        'transactions' => Transaction::latest()->filter(request(['search']))->paginate(10),
+        'customerss' => Customer::all(),
+        'transactionss' => Transaction::all(),
+        'notificationss' => Notification::all(),
+    ]);
+}
 }

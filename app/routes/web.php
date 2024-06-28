@@ -104,3 +104,11 @@ Route::post('/payment/callback', [Controller::class, 'handleCallback']);
 Route::get('/success', [Controller::class, 'success']);
 
 Route::get('/failure', [Controller::class, 'failure']);
+
+Route::get('/casts/my-profile/{customer}', [Controller::class, 'show_profile']);
+
+Route::put('/customers/editpict/{customer}', [Controller::class, 'update_profile_pic']);
+
+Route::put('/customers/editdata/{customer}', [Controller::class, 'update_customer_data']);
+
+Route::get('/generate-report', [Controller::class, 'payment_report']);

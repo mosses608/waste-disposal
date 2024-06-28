@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'user_role' => '1',
             'phone_number' => '0768272955',
             'username' => 'mosses608',
-            'password' => '12345679',
+            'password' => '123456789',
         ]);
         // \App\Models\User::factory(10)->create();
 

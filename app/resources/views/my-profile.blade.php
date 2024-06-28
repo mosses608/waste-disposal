@@ -18,6 +18,7 @@
         <h1>My Profile / {{Auth::guard('web')->user()->full_name}}</h1> <p class="current_Date">Date</p><br><br>
     </div>
 
+    <br>
     <div class="detailed-component-profile">
         <div class="current-user-detailed-lg">
             <img src="{{Auth::guard('web')->user()->profile ? asset('storage/' . Auth::guard('web')->user()->profile) : asset('assets/images/profile.png')}}" alt="My Profile Image">
